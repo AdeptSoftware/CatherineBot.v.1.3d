@@ -1,0 +1,8 @@
+.idea
+__pycache__
+venv
+test
+scripts
+git_upload.cmd
+.vs
+.git
