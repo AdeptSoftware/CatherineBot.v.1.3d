@@ -77,13 +77,13 @@ class Dialog(core.basethread.Thread):
                     app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_repeat_invite()) + self.yourself_action(item["from_id"], False))
                 else:
                     app().eventer.update_event_data("data_updater", "flag", True)
-                    app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_invite()))
+                    app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_invite()) + self.yourself_action(item["from_id"], False))
         else:
             app().log("Новый тип action: " + str(item["action"]["type"]), item["action"])
 
     def yourself_action(self, _id, is_leave):
         msg = ""
-        if self._setting["id"] in [2000000008, 20000000011]:
+        if self._setting["id"] in [2000000008, 2000000001]:
             msg = app().disk.user_profile(str(_id)).full_name()
             if msg == "?":
                 res = app().vk.call("users.get", {"user_ids": _id,
@@ -93,5 +93,5 @@ class Dialog(core.basethread.Thread):
             if is_leave:
                 msg = "\nНас покинул: " + msg
             else:
-                msg = "\nОбнаружен: " + msg
+                msg = "\nОбнаружен пользователь: " + msg
         return msg
