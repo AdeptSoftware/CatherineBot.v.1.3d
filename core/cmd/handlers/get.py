@@ -228,7 +228,7 @@ def announcement(e):
     else:
         e.set("count", count)
         e.set_next_time(e.get("interval", 1))
-    return true
+    return True
 
 def h_announcement(mp):
     if mp.uid not in [481403141, 9752245]:
