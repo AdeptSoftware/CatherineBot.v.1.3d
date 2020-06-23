@@ -70,6 +70,11 @@ class Dialog(core.basethread.Thread):
                     msg = core.strings.rnd(core.strings.on_leave())
                     if self._setting["id"] in [2000000008, 2000000001]:
                         name = app().disk.user_profile(str(item["from_id"])).full_name()
+                        if name == "?":
+                            res = app().vk.call("users.get", {"user_ids": item["from_id"],
+                                                      "fields": "domain,sex,online,can_write_private_message,city",
+                                                      "name_case": "nom"})
+                            name = res[0]["first_name"]+" "+res[0]["last_name"]
                         msg += "\nНас покинул: [id"+str(item["from_id"])+"|"+name+"]"
                     app().vk.send(self._setting["id"], msg)
                 else:

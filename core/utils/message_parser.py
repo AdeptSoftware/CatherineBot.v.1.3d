@@ -233,7 +233,7 @@ class MessageParser(Parser):
                 res = _re_link.findall(self.words[i][1])
                 if len(res) != 0:
                     res[0] = int(res[0])
-                    users_id[res[0]] = _app().disk.user_profile(res[0]).nick(None, is_all, '?')
+                    users_id[res[0]] = _app().disk.user_profile(res[0]).nick(None, is_all, None)
                 else:
                     if self.group == "Vainglory":
                         _n, _id = self.words[i][0], None
@@ -280,7 +280,7 @@ class MessageParser(Parser):
         if in_fwd_messages:
             for item in self.fwd:
                 if item["from_id"] not in users_id and item["from_id"] > 0 and item["from_id"] not in users_id:
-                    users_id[item["from_id"]] = _app().disk.user_profile(item["from_id"]).nick(self.group, is_all, '?')
+                    users_id[item["from_id"]] = _app().disk.user_profile(item["from_id"]).nick(self.group, is_all, None)
                 else:
                     if unk and item["from_id"] not in unknowns and item["from_id"] not in users_id:
                         unknowns += [item["from_id"]]

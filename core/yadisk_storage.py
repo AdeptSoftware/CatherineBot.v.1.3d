@@ -103,7 +103,9 @@ class _UserProfile:
                     return self._profile["nick"][group][0]
                 except (KeyError, IndexError, TypeError):
                     default = "[id%d|%s]" % (self._profile["user"]["id"], self._profile["user"]["first_name"])
-        if default is not None and _all:
+        if default is None:
+            default = self.full_name()
+        if _all:
             return [default]
         return default
 
