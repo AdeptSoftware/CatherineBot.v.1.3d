@@ -67,25 +67,31 @@ class Dialog(core.basethread.Thread):
         elif item["action"]["type"] == "chat_kick_user":        # {'type': 'chat_kick_user', 'member_id': 481403141}
             if self._setting["in_out"]:
                 if item["from_id"] == item["action"]["member_id"]:
-                    msg = core.strings.rnd(core.strings.on_leave())
-                    if self._setting["id"] in [2000000008, 2000000001]:
-                        name = app().disk.user_profile(str(item["from_id"])).full_name()
-                        if name == "?":
-                            res = app().vk.call("users.get", {"user_ids": item["from_id"],
-                                                      "fields": "domain,sex,online,can_write_private_message,city",
-                                                      "name_case": "nom"})
-                            name = res[0]["first_name"]+" "+res[0]["last_name"]
-                        msg += "\nНас покинул: [id"+str(item["from_id"])+"|"+name+"]"
-                    app().vk.send(self._setting["id"], msg)
+                    app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_leave()) + self.yourself_action(item["from_id"], True))
                 else:
                     app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_kick()))
                     
         elif item["action"]["type"] == "chat_invite_user":      # {'type': 'chat_invite_user', 'member_id': 481403141}
             if self._setting["in_out"]:
                 if item["from_id"] == item["action"]["member_id"]:
-                    app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_repeat_invite()))
+                    app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_repeat_invite()) + self.yourself_action(item["from_id"], False))
                 else:
                     app().eventer.update_event_data("data_updater", "flag", True)
                     app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_invite()))
         else:
             app().log("Новый тип action: " + str(item["action"]["type"]), item["action"])
+
+    def yourself_action(self, _id, is_leave):
+        msg = ""
+        if self._setting["id"] in [2000000008, 20000000011]:
+            msg = app().disk.user_profile(str(_id)).full_name()
+            if msg == "?":
+                res = app().vk.call("users.get", {"user_ids": _id,
+                                                  "fields": "domain,sex,online,can_write_private_message,city",
+                                                  "name_case": "nom"})
+                msg = "[id"+str(_id)+"|"+res[0]["first_name"]+" "+res[0]["last_name"]+"]"
+            if is_leave:
+                msg = "\nНас покинул: " + msg
+            else:
+                msg = "\nОбнаружен: " + msg
+        return msg
