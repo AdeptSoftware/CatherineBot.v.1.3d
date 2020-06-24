@@ -77,7 +77,7 @@ class Dialog(core.basethread.Thread):
                     app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_repeat_invite()) + self.yourself_action(item["from_id"], False))
                 else:
                     app().eventer.update_event_data("data_updater", "flag", True)
-                    app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_invite()) + self.yourself_action(item["from_id"], False))
+                    app().vk.send(self._setting["id"], core.strings.rnd(core.strings.on_invite()) + self.yourself_action(item["action"]["member_id"], False))
         else:
             app().log("Новый тип action: " + str(item["action"]["type"]), item["action"])
 

@@ -56,10 +56,19 @@ def _init():
                     'дратути', 'здрасти', 'здравствуй', 'здравствуйте', "приветик", 'здарова', 'hello', 'hey',
                     'хаюшки'])
     _obj = [
-            Command(name="OnAboutMe", _type=CMD_WITHOUT, nodes=[
-                Node(condition=n(["ачивки"], COND_C_ANY, COND_Q_NO, 1), h={"chk": c.h_achievements})]),
+            Command(name="OnAnnouncement", _type=CMD_EVERYBODY, swr=True, nodes=[
+                Node(condition=n("объявление", COND_C_FIRST), limit=-1, ans=["Сделаю!"], h={"get": g.h_announcement})]),
+            Command(name="OnSearch", _type=CMD_EVERYBODY, swr=False, nodes=[
+                Node(condition=n([k_find, "знакомства"], COND_C_FIRST, COND_Q_NO, 1), limit=-1, h={"chk": c.h_search},
+                     ans=["Прости, но мне запрещено выдавать информацию", "Я тебе ничего не скажу!", "Здесь был текст XD",
+                          "А ты точно не секретный шпион?", "Такой команды не существует!", "Ответ 42"])]),
+            Command(name="OnSearchJoke", _type=CMD_EVERYBODY, swr=False, nodes=[
+                Node(condition=n([k_find, "аббревиатура"], COND_C_FIRST, COND_Q_NO, 1), limit=-1, h={"chk": c.h_search_joke})]),
+
             Command(name="OnFindPlayer", _type=CMD_WITHOUT, nodes=[
                 Node(condition=n([k_find], COND_C_FIRST, COND_Q_NO, 1), h={"chk": c.h_find_player})]),
+            Command(name="OnAboutMe", _type=CMD_WITHOUT, nodes=[
+                Node(condition=n(["ачивки"], COND_C_ANY, COND_Q_NO, 1), h={"chk": c.h_achievements})]),
             # ====== ========= ========= ========= ========= ========= ========= # Разговорные команды
             Command(name="OnChaos", _type=CMD_ONE_FOR_ALL, swr=True, nodes=[
                 Node(condition=n("устрой беспорядок"), limit=1,
@@ -234,16 +243,6 @@ def _init():
             Command(name="OnHow", _type=CMD_WITHOUT, swr=True, nodes=[
                 Node(condition=n(k_how, COND_C_FIRST), limit=-1,
                      ans=["Никак XD", "Это долго объяснять..", "Я не в курсе("])]),
-
-            Command(name="OnAnnouncement", _type=CMD_EVERYBODY, swr=True, nodes=[
-                Node(condition=n("объявление", COND_C_FIRST), limit=-1, ans=["Сделаю!"], h={"get": g.h_announcement})]),
-            Command(name="OnSearch", _type=CMD_EVERYBODY, swr=False, nodes=[
-                Node(condition=n([k_find, "знакомства"], COND_C_FIRST, COND_Q_NO, 1), limit=-1, h={"chk": c.h_search},
-                     ans=["Прости, но мне запрещено выдавать информацию", "Я тебе ничего не скажу!", "Здесь был текст XD",
-                          "А ты точно не секретный шпион?", "Такой команды не существует!", "Ответ 42"])]),
-            Command(name="OnSearchJoke", _type=CMD_EVERYBODY, swr=False, nodes=[
-                Node(condition=n([k_find, "аббревиатура"], COND_C_FIRST, COND_Q_NO, 1), limit=-1, h={"chk": c.h_search_joke})]),
-
             Command(name="OnAnyQuestion", _type=CMD_WITHOUT, swr=True, nodes=[
                 Node(condition=n(None, q=COND_Q_YES), limit=-1,
                      ans=["Да", "Нет", "Неизвестно"])])]

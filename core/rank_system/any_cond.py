@@ -27,13 +27,14 @@ def print_achievement(mp, index, key, value=None, description=True, only_name=Fa
     return ""
 
 
-def inc(mp, index):
+def inc(mp, index, upd=True):
     if index in mp.s["achievements"]:
         mp.s["achievements"][index] += 1
         return print_achievement(mp, index, mp.s["achievements"][index])
     else:
         mp.s["achievements"][index] = 1
-    core.instance.app().eventer.update_event_data("data_updater", "flag", True)
+    if upd:
+        core.instance.app().eventer.update_event_data("data_updater", "flag", True)
     return ""
 
 
@@ -132,6 +133,46 @@ def _cond_gif(mp):
 
 def _cond_picture(mp):
     return __cond_att(mp, 19, "photo")
+
+def _cond_swear(mp):
+    for swear in ["еб", "бля", "хуй", "пизд", "сука", "суки", "хер", "чмо", "нахуя",
+                  "даун", "дебил", "нахуй", "нахер", "лох", "мудак", "похер"]:
+        for w in mp.words:
+            if w[1][0:len(swear)] == swear:
+                return inc(mp, 20)
+    return ""
+
+def _cond_leave(mp):
+    # if "action" in mp.item and mp.item["action"]["type"] == "chat_kick_user":
+    #    return inc(mp, 22, False)
+    return ""
+
+def _cond_caller(mp):
+    if mp.length > 1:
+        for i in range(0, mp.length-1):
+            if (mp.words[i][2] in ["|@", "|*"] and ']' in mp.words[i+1][2] and
+                mp.words[i+1][1] in ["all", "online"]):
+                return inc(mp, 24)
+    return ""
+
+def _cond_audio(mp):
+    return __cond_att(mp, 26, "audio")
+
+def is_type(mp, _type):
+    for a in mp.item["attachments"]:
+        if "type" in a and a["type"] == _type:
+            return a
+    return None
+
+def _cond_audio_message(mp):
+    a = is_type(mp, "audio_message")
+    if a is not None:
+        if 27 not in mp.s["achievements"]:
+            mp.s["achievements"][27] = [0, a["audio_message"]["duration"]]
+        else:
+            mp.s["achievements"][27][1] += a["audio_message"]["duration"]
+        return inc_s(mp, 27, mp.s["achievements"][27][1])
+    return ""
 
 
 # достижения
@@ -318,4 +359,42 @@ achievement_list = [[_x.n(["я", "меня", "мне"]),                        
                     [_cond_picture,                                                     # 19
                      {5: ["Художник", None],
                       50: ["Художественная выставка", None],
-                      150: ["Третьяковская галерея", None]}]]
+                      150: ["Третьяковская галерея", None]}],
+                      
+                    [_cond_swear,                                                       # 20
+                     {75: ["Орк-Сквернослов", ["Я этого не одобряю!"]],
+                      300: ["Орк-Матершинник", ["Остановись, окоянный!"]],
+                      900: ["Орк-Сапожник", ["Хуже черной метки..."]]}],
+                    
+                    [_x.n(["не понял", "не поняла", "не понятно", "непонятно"]),        # 21
+                     {10: ["Непонятливый", None]}],
+                    
+                    [_cond_leave,                                                       # 22
+                     {2: ["Забвение", ["Он ушёл, но обещал вернутся...", "Ушёл в закат..."]],
+                      15: ["Экзекуция", ["Бедный йорик!", "Сжечь ведьму!"]]}],
+                    
+                    [_x.n(["ихний", "отсюдова", "вообщем", "текет", "ложить"]),         # 23
+                     {10: ["-10 к красноречию", None],
+                      100: ["Неисправимый", ["Их или ихний? Да какая разница..."]]}],
+
+                    [_cond_caller,                                                      # 24
+                     {25: ["Рупор", None],
+                      75: ["Агитатор", None],
+                      150: ["Глас народа", None]}],
+
+                    [_x.n(["спасибо", "не за что", "на здоровье"]),                     # 25
+                     {20: ["Вежливый", None],
+                      100: ["Само благородство", ["Найти таких людей сложно в наши дни..."]]}],
+
+                    [_cond_audio,                                                       # 26
+                     {7: ["Аудиофил", None],
+                      50: ["Меломан", None],
+                      150: ["Музыковед", None]}],
+
+                    [_cond_audio_message,                                               # 27
+                     {300: ["Болтун", ["5 минут голосовых сообщений? Пф. Ерунда!"]],
+                      900: ["Длинный язык", ["Прошло только полчаса..."]],
+                      1800: ["Долгий разговор", ["Ровно 1 час голосовых"]],
+                      10800: ["Монстр общения", None]}]
+                    
+                    ]

@@ -18,7 +18,7 @@ rank_list = [["Неизвестный", 0],                                    #
              ["Великий жрец", 50000],                               # 11
              ["Владыка", 70000],                                    # 12
              ["Легенда чата", 100000],                              # 13
-             ["Сверхразум", 200000],                                # 14
+             ["Сверхразум", 1000000],                               # 14
              ["Сама бесконечность", 1000000000]]
 
 
@@ -51,7 +51,7 @@ def main(mp, spam_count=5, spam_time=60):
         return True
 
     # Если повторяется текст, то не учитываем
-    if mp.s["last"][0] == mp.item["text"]:
+    if mp.s["last"][0] == mp.item["text"] and _c.is_type(mp, "audio_message") is None:
         mp.s["last"][1] += 1
         if mp.s["last"][1] == spam_count and mp.s["last"][2] < spam_time:
             mp.send("тебе не кажется, что это уже спам?!")
@@ -83,7 +83,7 @@ def main(mp, spam_count=5, spam_time=60):
         if r1.search(mp.words[i][1]) is not None or \
            not _length(r0.split(r2.sub(' ', mp.words[i][1]).strip()), 3, ["ств", "нстр", "встр", "льств", "йств",
                                                                           "нств", "тств", "вств", "взгл", "рств",
-                                                                          "ссср"]) or \
+                                                                          "ссср", "мств"]) or \
            not _length(r0.split(r3.sub(' ', mp.words[i][1]).strip()), 2, []) or \
            (f[mp.words[i][1]] <= 3 and (length < 3 or length > 12)):
             continue

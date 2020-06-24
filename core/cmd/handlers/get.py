@@ -224,11 +224,11 @@ def announcement(e):
     instance.app().vk.send(e.get("peer_id", 481403141), e.get("msg", "Error!"))
     count -= 1
     if (count <= 0):
-        instance.app().eventer.delete("Announcement")
+        return False
     else:
         e.set("count", count)
         e.set_next_time(e.get("interval", 1))
-    return true
+    return True
 
 def h_announcement(mp):
     if mp.uid not in [481403141, 9752245]:
@@ -240,8 +240,8 @@ def h_announcement(mp):
         return FN_CONTINUE
     msg = "\n".join(lst[1:])
     interval = int(mp.words[1][0])*60
-    num = str(random.randint(0, 999999))
-    instance.app().eventer.new(core.event.eventer.Event("Announcement "+num, announcement, 
+    name = "Announcement "+str(random.randint(0, 999999))
+    instance.app().eventer.new(core.event.eventer.Event(name, announcement, 
                                {"interval": interval, "count": int(mp.words[2][0]), "msg": msg,
-                                "peer_id": mp.pid}, interval))
+                                "peer_id": mp.pid, "name": name}, interval))
     return mp.send(mp.node.get_answers()[0])
