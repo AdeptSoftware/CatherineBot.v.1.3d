@@ -62,7 +62,10 @@ class Manager(core.basethread.Thread):
             if event_name in self._event:
                 self._event.pop(event_name)
             else:
-                app().log(event_name + " - неизвестное событие. Удаление невозможно!")
+                for name in self._event:
+                    if event_name in name:
+                        self._event.pop(name)
+                app().log(event_name + " - неизвестное событие. Удалены все похожие!")
         finally:
             self._lock.release()
 

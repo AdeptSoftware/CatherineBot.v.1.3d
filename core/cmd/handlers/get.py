@@ -224,7 +224,11 @@ def announcement(e):
     instance.app().vk.send(e.get("peer_id", 481403141), e.get("msg", "Error!"))
     count -= 1
     if (count <= 0):
+<<<<<<< HEAD
         return False
+=======
+        instance.app().eventer.delete(e.get("name", "Announcement"))
+>>>>>>> c97c76809d30453c612ea840c369b44dec63a288
     else:
         e.set("count", count)
         e.set_next_time(e.get("interval", 1))
