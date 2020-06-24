@@ -26,11 +26,14 @@ class Dialog(core.basethread.Thread):
     def update(self):
         if self._queue:
             item = self._queue.pop(0)
+            mp = core.utils.message_parser.MessageParser(item, _refs, group=self._setting["group"])
+            self._h(mp)
             if "action" in item:
                 if "type" in item["action"]:
+                    item["from_id"] = mp.uid
                     self._on_action(item)
             else:
-                self._on_message(item)
+                self._on_message(mp)
         # обновление списка заблокированных команд для пользователей
         self._manager.update()
 
@@ -42,10 +45,7 @@ class Dialog(core.basethread.Thread):
         return True
 
     # обработка сообщений
-    def _on_message(self, item):
-        mp = core.utils.message_parser.MessageParser(item, _refs, group=self._setting["group"])
-        if not self._h(mp):
-            return
+    def _on_message(self, mp):
         _list = self._manager.get_available_commands(mp.uid)
         for cmd_id in _list:
             for i in range(0, len(_list[cmd_id][0])):

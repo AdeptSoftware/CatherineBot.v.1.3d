@@ -143,8 +143,8 @@ def _cond_swear(mp):
     return ""
 
 def _cond_leave(mp):
-    # if "action" in mp.item and mp.item["action"]["type"] == "chat_kick_user":
-    #    return inc(mp, 22, False)
+    if "action" in mp.item and mp.item["action"]["type"] == "chat_kick_user":
+        return inc(mp, 22, False)
     return ""
 
 def _cond_caller(mp):
