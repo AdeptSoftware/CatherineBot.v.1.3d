@@ -5,7 +5,7 @@
 Содержит команды для работы с API Vainglory и развлекательные команды для участников бесед.
 
 
-Автор: AdeptSoftware
+Автор: Adept
 
 Связь: AdeptSoftware@yandex.ru
 
